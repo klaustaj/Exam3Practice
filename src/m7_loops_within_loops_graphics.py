@@ -5,8 +5,8 @@ This problem provides practice at:
   ***  LOOPS WITHIN LOOPS in 2D GRAPHICS problems.  ***
 
 Authors: David Mutchler, Valerie Galluzzi, Mark Hays, Amanda Stouder,
-         their colleagues and PUT_YOUR_NAME_HERE.
-"""  # TODO: 1. PUT YOUR NAME IN THE ABOVE LINE.
+         their colleagues and Aaron Klaustermeier.
+"""  # DONE: 1. PUT YOUR NAME IN THE ABOVE LINE.
 
 ########################################################################
 # Students:
@@ -29,6 +29,7 @@ Authors: David Mutchler, Valerie Galluzzi, Mark Hays, Amanda Stouder,
 ########################################################################
 
 import rosegraphics as rg
+import math
 
 
 def main():
@@ -89,7 +90,7 @@ def hourglass(window, n, point, radius, color):
     a color that rosegraphics understands.
     """
     # ------------------------------------------------------------------
-    # TODO: 2. Implement and test this function.
+    # DONE: 2. Implement and test this function.
     #       We provided some tests for you (above).
     # ------------------------------------------------------------------
     ####################################################################
@@ -101,6 +102,38 @@ def hourglass(window, n, point, radius, color):
     #    DIFFICULTY:      8
     #    TIME ESTIMATE:  25 minutes (warning: this problem is challenging)
     # ------------------------------------------------------------------
+    for j in range(n):
+        x = point.x - j * radius
+        for k in range(j + 1):
+            y_rel = j * math.sqrt(3) * radius
+
+            # Circle 1:
+            center = rg.Point(x, point.y + y_rel)
+            circle = rg.Circle(center, radius)
+
+            p1 = rg.Point(x - radius, point.y + y_rel)
+            p2 = rg.Point(x + radius, point.y + y_rel)
+            line = rg.Line(p1, p2)
+
+            circle.fill_color = color
+            circle.attach_to(window)
+            line.attach_to(window)
+            window.render()
+
+            # Circle 2
+            center = rg.Point(x, point.y - y_rel)
+            circle = rg.Circle(center, radius)
+
+            p1 = rg.Point(x - radius, point.y - y_rel)
+            p2 = rg.Point(x + radius, point.y - y_rel)
+            line = rg.Line(p1, p2)
+
+            circle.fill_color = color
+            circle.attach_to(window)
+            line.attach_to(window)
+            window.render()
+
+            x = x + radius * 2
 
 
 def run_test_many_hourglasses():
@@ -163,7 +196,7 @@ def many_hourglasses(window, square, m, colors):
     each of which denotes a color that rosegraphics understands.
     """
     # ------------------------------------------------------------------
-    # TODO: 3. Implement and test this function.
+    # DONE: 3. Implement and test this function.
     #       We provided some tests for you (above).
     # ------------------------------------------------------------------
     ####################################################################
@@ -179,6 +212,37 @@ def many_hourglasses(window, square, m, colors):
     #                         a correct "hourglass" function above)
     #    TIME ESTIMATE:  20 minutes (warning: this problem is challenging)
     # ------------------------------------------------------------------
+    square.attach_to(window)
+    window.render()
+
+    radius = square.length_of_each_side/2
+
+    hourglass(window, 1, square.center, radius, colors[1])
+
+    height = 2*math.sqrt(3)*radius + radius*2
+    width = 4*radius
+
+    point1 = rg.Point(square.center.x + radius, square.center.y - height/2)
+    point2 = rg.Point(point1.x + width, point1.y + height)
+
+    color_index = 2
+    for k in range(m):
+        rectangle = rg.Rectangle(point1, point2)
+        rectangle.attach_to(window)
+        window.render()
+
+        center = rg.Point((point1.x + point2.x)/2, (point1.y + point2.y)/2)
+        hourglass(window, k + 2, center, radius, colors[color_index])
+
+        height = 2 * (k+2) * math.sqrt(3) * radius + radius * 2
+        width = 2 * (k+3) * radius
+
+        point1 = rg.Point(point2.x, square.center.y - height/2)
+        point2 = rg.Point(point1.x + width, point1.y + height)
+
+        color_index = color_index + 1
+        if color_index + 1 > len(colors):
+            color_index = 0
 
 
 # ----------------------------------------------------------------------
